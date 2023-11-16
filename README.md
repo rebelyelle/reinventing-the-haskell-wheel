@@ -8,7 +8,6 @@ Provides functionality for a `Fraction` type, which supports arithmetic and expo
 * **conversion:** conversion to floating-point, conversion to 
 
 ### to be fixed
-* **arithmetic:** addition & subtraction currently bugged, dropping higher-order coefficients
 * **equivalency:** fix reducing function to also take care of negative signs
 
 ### to be added
