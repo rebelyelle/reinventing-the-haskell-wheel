@@ -14,6 +14,13 @@ Provides functionality for a `Matrix` type (really a `type` of ``[[Double]]``):
 * **arithmetic:** addition, subtraction, scalar multiplication, matrix multiplication, dot product for row-vectors and column-vectors
 * **related matrices:** transpose, cofactor, adjugate, inverse, submatrices
 
+### to be added
+* **booleans:** isUpperTriangular, isLowerTriangular, isDiagonal, isNull
+* gaussian/gauss-jordan elimination --> calculating rank
+* matrix decomposition (principal value, LU, QR)
+* eigenvalues, eigenvectors, characteristic polynomial (invoking Polynomials.hs?)
+* pseudoinverse
+
 ## NumberTheory.hs
 Provides functions relating to number theory, including:
 * set cardinality and powerset (borrowing from Set Theory)
