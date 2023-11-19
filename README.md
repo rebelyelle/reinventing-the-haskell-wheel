@@ -38,9 +38,6 @@ Provides functionality for a `Polynomial` type (really a `type` of `[Double]`). 
 * **features:** degree
 * **calculus:** differentiation *p(x) → dp/dx*, antidifferentiation *p(x) → ∫ p(x) dx*, integral *p(x) → ∫<sub>a</sub><sup>b</sup> p(x) dx*
 
-### to be fixed
-* **arithmetic:** addition & subtraction currently bugged, dropping higher-order coefficients
-
 ### to be added
 * **features:** zeroes, extrema (zeroes of *dp/dx*), turning points (zeroes of *d<sup>2</sup>p/dx<sup>2</sup>*)
 * **arithmetic:** Euclidean division of polynomials (quotient & remainder)
