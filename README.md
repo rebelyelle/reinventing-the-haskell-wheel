@@ -9,7 +9,7 @@ Provides functionality for a `Fraction` type, which supports arithmetic and expo
 * **conversion:** conversion to floating-point, conversion from floating-point, rounding fraction to new denominator
 
 ## Matrices.hs
-Provides functionality for a `Matrix` type (really a `type` of ``[[Double]]``):
+Provides functionality for a `Matrix` type:
 * **features:** row & column & element access, trace, determinant
 * **arithmetic:** addition, subtraction, scalar multiplication, matrix multiplication, dot product for row-vectors and column-vectors
 * **related matrices:** transpose, cofactor, adjugate, inverse, submatrices
@@ -33,7 +33,7 @@ Provides functions relating to number theory, including:
 * **miscellaneous:** reversing the digits in an integer or floating-point number
 
 ## Polynomials.hs
-Provides functionality for a `Polynomial` type (really a `type` of `[Double]`). A polynomial of the form *p(x) = a<sub>0</sub> + a<sub>1</sub>x + a<sub>2</sub>x<sup>2</sup> + ... + a<sub>n</sub>x<sup>n</sup>* is stored as a list of coefficients `[a0, a1, ..., an]`.
+Provides functionality for a `Polynomial` type. A polynomial of the form *p(x) = a<sub>0</sub> + a<sub>1</sub>x + a<sub>2</sub>x<sup>2</sup> + ... + a<sub>n</sub>x<sup>n</sup>* is stored as a wrapped list of coefficients `[a0, a1, ..., an]`.
 * **arithmetic:** addition, subtraction, multiplication, evaluation of *p(x)*
 * **features:** degree
 * **calculus:** differentiation *p(x) → dp/dx*, antidifferentiation *p(x) → ∫ p(x) dx*, integral *p(x) → ∫<sub>a</sub><sup>b</sup> p(x) dx*
