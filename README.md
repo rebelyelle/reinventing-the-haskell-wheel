@@ -3,23 +3,16 @@ Custom-built Haskell modules for various math-y purposes.
 
 ## Fractions.hs
 Provides functionality for a `Fraction` type, which supports arithmetic and exponents with fractions.
-* **arithmetic:** addition, subtraction, multiplication, division
+* **arithmetic:** addition, subtraction, multiplication, division, absolute value, sign, finding LCD
+* **comparison:** equality and LE/LEQ comparison operators
 * **equivalency:** change to most-reduced form, scaling-up numerator & denominator
-* **conversion:** conversion to floating-point, conversion to 
-
-### to be fixed
-* **equivalency:** fix reducing function to also take care of negative signs
-
-### to be added
-* **booleans:** comparison operators
+* **conversion:** conversion to floating-point, conversion from floating-point, rounding fraction to new denominator
 
 ## Matrices.hs
 Provides functionality for a `Matrix` type (really a `type` of ``[[Double]]``):
-* row & column access
-* trace, determinant
-* transpose, cofactor, adjugate, inverse, submatrices
-* arithmetic: addition, subtraction, scalar multiplication, matrix multiplication
-* dot product for row-vectors and column-vectors
+* **features:** row & column & element access, trace, determinant
+* **arithmetic:** addition, subtraction, scalar multiplication, matrix multiplication, dot product for row-vectors and column-vectors
+* **related matrices:** transpose, cofactor, adjugate, inverse, submatrices
 
 ## NumberTheory.hs
 Provides functions relating to number theory, including:
