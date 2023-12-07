@@ -3,132 +3,122 @@
 module Fractions where
 import qualified GHC.Real (numerator, denominator)
 import Data.Char (isDigit)
-
--- Custom implementation of splitOn function, working with regular strings.
-_splitOn :: Char -> String -> [String]
-_splitOn c str
-    | str == ""         = []
-    | c `notElem` str   = [str]
-    | otherwise         = str_up_to_c : _splitOn c str_after_c
-    where
-        str_up_to_c     = fst broken_string
-        str_after_c     = tail $ snd broken_string
-        broken_string   = break (== c) str
+import BrentHelpers ( splitOn )
 
 {- ========================================
     DATA TYPE DEFINITION & IMPLEMENTATION
 ======================================== -}
 
 -- Defines new data type `Fraction` as a pair of integers.
-data Fraction = Fraction Integer Integer
+data FracType a = Fraction { numerator :: a, denominator :: a }
+
+(%) :: a -> a -> FracType a
+n % d = Fraction n d
 
 -- Makes fractions 'show'able in usual slash-form.
-instance Show Fraction where
-    show :: Fraction -> String
-    show (Fraction n d) = show n ++ "/" ++ show d
+instance Show a => Show (FracType a) where
+    show :: Show a => FracType a -> String
+    show (Fraction n d) = "[" ++ show n ++ "] / [" ++ show d ++ "]"
 
 -- Not sure if I implemented 'readsPrec' correctly here, but it at least functions to read strings of the expected format like "5/7".
 -- NOTE: Does NOT reduce the fraction.
-instance Read Fraction where
-    readsPrec :: Int -> ReadS Fraction
+instance Read a => Read (FracType a) where
+    readsPrec :: Int -> ReadS (FracType a)
     readsPrec _ str
         | length split_string > 2   = error "Too many components for Fraction type!"
         | length split_string < 2   = error "Not enough components for Fraction type!"
-        | otherwise                 = [(reduceFraction $ Fraction (read numerator_str) (read denominator_str), "")]
+        | otherwise                 = [(Fraction (read numerator_str) (read denominator_str), "")]
         where
-            split_string = _splitOn '/' str
+            split_string = splitOn '/' str
             numerator_str = head split_string
             denominator_str = split_string !! 1
 
 -- IMPLEMENTATION: Uses cross-multiplication. Would it be faster to first reduce the fractions, then check if num1==num2 and denom1==denom2?
-instance Eq Fraction where
-    (==) :: Fraction -> Fraction -> Bool
+instance (Num a, Eq a) => Eq (FracType a) where
+    (==) :: FracType a -> FracType a -> Bool
     (==) (Fraction n1 d1) (Fraction n2 d2) = n1*d2 == n2*d1
 
--- IMPLEMENTATION: Re-scales both fraction to have common denominator, then compares numerators... Would converting to floats be faster?
-instance Ord Fraction where
-    (<) :: Fraction -> Fraction -> Bool
+-- IMPLEMENTATION: Re-scales both fraction to have common denominator (product of denominators), then compares numerators... Would converting to floats be faster?
+instance (Num a, Ord a) => Ord (FracType a) where
+    (<) :: FracType a -> FracType a -> Bool
     (<) frac1 frac2 = n1s < n2s where
-        (Fraction n1s d1s, Fraction n2s d2s) = lcdify frac1 frac2
-    (<=) :: Fraction -> Fraction -> Bool
+        (Fraction n1s d1s, Fraction n2s d2s) = cdify frac1 frac2
+    (<=) :: FracType a -> FracType a -> Bool
     (<=) frac1 frac2 = (frac1 < frac2) || (frac1 == frac2)
 
 -- IMPLEMENTATION: The arithmetic operators will reduce any resulting fraction.
-instance Num Fraction where
-    (+) :: Fraction -> Fraction -> Fraction
-    (+) (Fraction n1 d1) (Fraction n2 d2) = reduceFraction $ Fraction (n1*d2 + n2*d1) (d1*d2)
-    (-) :: Fraction -> Fraction -> Fraction
-    (-) (Fraction n1 d1) (Fraction n2 d2) = reduceFraction $ Fraction (n1*d2 - n2*d1) (d1*d2)
-    (*) :: Fraction -> Fraction -> Fraction
-    (*) (Fraction n1 d1) (Fraction n2 d2) = reduceFraction $ Fraction (n1*n2) (d1*d2)
-    abs :: Fraction -> Fraction
-    abs (Fraction n d) = reduceFraction $ Fraction (abs n) (abs d)
-    signum :: Fraction -> Fraction
+instance (Num a) => Num (FracType a) where
+    (+) :: FracType a -> FracType a -> FracType a
+    (+) (Fraction n1 d1) (Fraction n2 d2) = Fraction (n1*d2 + n2*d1) (d1*d2)
+    (-) :: FracType a -> FracType a -> FracType a
+    (-) (Fraction n1 d1) (Fraction n2 d2) = Fraction (n1*d2 - n2*d1) (d1*d2)
+    (*) :: FracType a -> FracType a -> FracType a
+    (*) (Fraction n1 d1) (Fraction n2 d2) = Fraction (n1*n2) (d1*d2)
+    abs :: FracType a -> FracType a
+    abs (Fraction n d) = Fraction (abs n) (abs d)
+    signum :: FracType a -> FracType a
     signum (Fraction n d) = Fraction (signum n * signum d) 1
-    fromInteger :: Integer -> Fraction
-    fromInteger i = Fraction i 1
-instance Fractional Fraction where
-    (/) :: Fraction -> Fraction -> Fraction
-    (/) (Fraction n1 d1) (Fraction n2 d2) = reduceFraction $ Fraction (n1*d2) (n2*d1)
-    recip :: Fraction -> Fraction
-    recip (Fraction n d) = reduceFraction $ Fraction d n
-    fromRational :: Rational -> Fraction
-    fromRational r = Fraction (GHC.Real.numerator r) (GHC.Real.denominator r)
+    fromInteger :: Integer -> FracType a
+    fromInteger i = Fraction (fromInteger i) 1
+instance Num a => Fractional (FracType a) where
+    (/) :: FracType a -> FracType a -> FracType a
+    (/) (Fraction n1 d1) (Fraction n2 d2) = Fraction (n1*d2) (n2*d1)
+    recip :: FracType a -> FracType a
+    recip (Fraction n d) = Fraction d n
+    fromRational :: Rational -> FracType a
+    fromRational r = Fraction (fromInteger $ GHC.Real.numerator r) (fromInteger $ GHC.Real.denominator r)
 
 {- ========================================
     HELPER FUNCTIONS
 ======================================== -}
--- grab numerator of Fraction
-numerator :: Fraction -> Integer
-numerator (Fraction n d) = n
--- grab denominator of Fraction
-denominator :: Fraction -> Integer
-denominator (Fraction n d) = d
-
--- reduce fraction to lowest terms, with denominator forced positive
-reduceFraction :: Fraction -> Fraction
+-- reduce fraction to "standard form" : lowest terms, with denominator forced positive
+reduceFraction :: (Eq a, Integral a) => FracType a -> FracType a
 reduceFraction (Fraction n d)
-    | d == 0        = error $ "DIVZERO -- Attempted to reduce " ++ show n ++ "/" ++ show d ++ "."
-    | otherwise     = fixNegative $ Fraction (n `div` g) (d `div` g)
-    where
-        g                           = gcd n d
-        fixNegative (Fraction a b)  = Fraction (signum a * signum b * abs a) (abs b)
+    | d == 0        = error "DIVZERO -- Attempted to use 'reduceFraction' on a fraction with denominator 0."
+    | otherwise     = fixNegativeDenom $ Fraction (n `div` g) (d `div` g) where g = gcd n d
 
--- multiply top and bottom of a fraction by a given integer, de-reducing it
-scaleFraction :: Integral b => b -> Fraction -> Fraction
+-- force a fraction to have a positive denominator
+fixNegativeDenom :: (Num a, Eq a) => FracType a -> FracType a
+fixNegativeDenom (Fraction n d)
+    | d == 0        = error "DIVZER -- Attempted to use 'fixNegativeDenom' on a fraction with denominator 0."
+    | otherwise     = Fraction (signum n * signum d * abs n) (abs d)
+
+-- multiply top and bottom of a fraction by a given a, de-reducing it
+scaleFraction :: (Num a, Eq a) => a -> FracType a -> FracType a
 scaleFraction s (Fraction n d)
-    | s == 0        =   error $ "DIVZERO -- Multiplying numerator and denominator by " ++ show s' ++ " would cause division by 0."
-    | otherwise     =   Fraction (s' * n) (s' * d)
-    where
-        s' = fromIntegral s :: Integer
+    | s == 0        =   error "DIVZERO -- Attempted to use 'scaleFraction' to make a fraction with denominator 0."
+    | otherwise     =   Fraction (s * n) (s * d)
 
--- evaluate a fraction as a Float or Double
-makeFloating :: RealFrac a => Fraction -> a
+-- evaluate an integer fraction as a Float or Double
+makeFloating :: (Integral a, Floating b) => FracType a -> b
 makeFloating (Fraction n d)
-    | d == 0        = error $ "DIVZERO -- Attempted to convert " ++ show n ++ "/" ++ show d ++ " to floating-point form."
+    | d == 0        = error "DIVZERO -- Attempted to use 'makeFloating' on a fraction with denominator 0."
     | otherwise     = nf / df
     where
-        nf = fromInteger n
-        df = fromInteger d
+        nf = fromIntegral n 
+        df = fromIntegral d
 
 -- force a Float or Double into Fraction representation _with_ a specified denominator
-makeFraction :: (RealFloat a, Integral b) => a -> b -> Fraction
-r `makeFraction` d = reduceFraction $ Fraction rd_round d' where
-    d'          = fromIntegral d
+makeFraction :: (RealFrac a, Integral b) => a -> b -> FracType b
+makeFraction r d = Fraction rd_round d where
     rd          = r * fromIntegral d
     rd_round    = round rd
 
 -- given a Fraction, round it to the nearest Fraction with the specified denominator
-roundFraction :: Integral b => Fraction -> b -> Fraction
+roundFraction :: Integral a => FracType a -> a -> FracType a
 frac `roundFraction` new_d = makeFraction (makeFloating frac) new_d
 
 -- given two fractions, finds their least common positive denominator
-lcd :: Fraction -> Fraction -> Integer
+lcd :: Integral a => FracType a -> FracType a -> a
 lcd (Fraction n1 d1) (Fraction n2 d2) = lcm d1 d2
 
 -- given two fractions, returns a tuple of them with a shared least common positive denominator
-lcdify :: Fraction -> Fraction -> (Fraction, Fraction)
+lcdify :: Integral a => FracType a -> FracType a -> (FracType a, FracType a)
 lcdify frac1 frac2 = (scaleFraction s1 frac1, scaleFraction s2 frac2) where
     new_d   = lcd frac1 frac2
     s1 = new_d `div` denominator frac1
     s2 = new_d `div` denominator frac2
+
+-- given two fractions, returns a tuple of them both scaled to have the same denominator, defined as the product of the original two denominators (keeping the signs of the original denominators)
+cdify :: (Num a, Eq a) => FracType a -> FracType a -> (FracType a, FracType a)
+cdify frac1@(Fraction n1 d1) frac2@(Fraction n2 d2) = (scaleFraction (abs d2) frac1, scaleFraction (abs d1) frac2)
