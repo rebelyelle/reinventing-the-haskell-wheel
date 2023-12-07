@@ -4,23 +4,11 @@
 
 module Matrices where
 
+import BrentHelpers ( alternateSigns, makeArrayOfIndices, map2D )
+
 -- helpful typedefs
 type Element    = Double
 type Row        = [Element]
-
-{- ========================================
-    HELPER FUNCTIONS
-======================================== -}
-
-alternateRowSigns :: Row -> Row
-alternateRowSigns row = zipWith (*) row (cycle [1, -1])
-
-makeArrayOfIndices :: Int -> Int -> [[(Int, Int)]]
-makeArrayOfIndices rMax cMax = [[(i, j) | j <- [0..cMax-1] ] | i <- [0..rMax-1]]
-
--- We will be using this largely for its ability to act on makeArrayOfIndices arrays 
-map2D :: (a -> b) -> [[a]] -> [[b]]
-map2D = map . map
 
 {- ========================================
     TYPE DEFINITION & IMPLEMENTATION
@@ -154,7 +142,7 @@ determinant matrix              =
     then dotprod altfirst subdets
     else error $ "Cannot calculate determinant of non-square matrix. Given dimensions: " ++ show (dims matrix)
     where
-        altfirst = alternateRowSigns (matrix `row` 0)
+        altfirst = alternateSigns (matrix `row` 0)
         subdets  = map determinant $ submatrices 0 matrix
 
 -- DOT PRODUCTS: Extra functions here so we can avoid doing transposition and full-on matrix multiplication in places.
