@@ -40,38 +40,38 @@ Provides functions relating to number theory, including:
 * Kronecker delta, 2D and 3D Levi-Civita symbols
 * factorial, permutation, combination
 * **divisibility:** determining divisors & common factors, factor multiplicity, common multiples, coprimality, totatives & Euler's totient function, aliquot sum, abundance/deficiency, determining square-free-ness, Fermat's primality test, Bézout coefficients from Extended Euclidean Algorithm
-* **prime numbers:** all primes, primality test, mersenne primes, prime factorization, Ω(n) and ω(n) functions, prime-counting function π(n), Liouville's function λ(n), Möbius function μ(n), Mertens function M(n), primorial function n#, Chebyshev functions ϑ(n) and ψ(n), Von Mangoldt function Λ(n)
-* **prime-like qualities:** *k*-almost primes, Carmichael and Lucas-Carmichael numbers, Strømer numbers, *k*-pseudoprimes, perfect numbers, semiperfect numbers, abundant & deficient numbers, weird numbers, *k*-smooth and *k*-rough numbers, practical numbers
-* **integer sequences:** Lucas sequences of the first kind (Fibonacci, Pell, Jacobsthal), Lucas sequences of the 2nd kind (Lucas, Pell-Lucas, Jacobsthal-Lucas), Sylvester's sequence, Göbel's sequence, Catalan numbers *C<sub>n</sub>*, Bell numbers *B<sub>n</sub>*, Stirling numbers of the 1st and 2nd kinds, Bernoulli numbers *B<sup>+</sup><sub>n</sub>*
+* **prime numbers:** all primes, primality test, mersenne primes, prime factorization, $\Omega(n)$ and $\omega(n)$ functions, prime-counting function $\pi(n)$, Liouville's function $\lambda(n)$, Möbius function $\mu(n)$, Mertens function $M(n)$, primorial function $n$#, Chebyshev functions $\vartheta(n)$ and $\psi(n)$, Von Mangoldt function $\Lambda(n)$
+* **prime-like qualities:** $k$-almost primes, Carmichael and Lucas-Carmichael numbers, Strømer numbers, $k$-pseudoprimes, perfect numbers, semiperfect numbers, abundant & deficient numbers, weird numbers, $k$-smooth and $k$-rough numbers, practical numbers
+* **integer sequences:** Lucas sequences of the first kind (Fibonacci, Pell, Jacobsthal), Lucas sequences of the 2nd kind (Lucas, Pell-Lucas, Jacobsthal-Lucas), Sylvester's sequence, Göbel's sequence, Catalan numbers $C_n$, Bell numbers $B_n$, Stirling numbers of the 1st and 2nd kinds, Bernoulli numbers $B^+_n$
 * **miscellaneous:** reversing the digits in an integer or floating-point number
 
 ## PeanoNumbers.hs
-Implements a construction of the natural numbers from [Peano axioms](https://en.wikipedia.org/wiki/Peano_axioms), followed by integers using an equivalence class of ordered pairs, followed by rationals by the same. At each level (ℕ, ℤ, and ℚ), various functionalities are implemented:
+Implements a construction of the natural numbers from [Peano axioms](https://en.wikipedia.org/wiki/Peano_axioms), followed by integers using an equivalence class of ordered pairs, followed by rationals by the same. At each level ($\mathbb{N}$, $\mathbb{Z}$, and $\mathbb{Q}$), various functionalities are implemented:
 
 * **arithmetic:** addition, multiplication
-  * ℕ: incomplete subtraction (due to lack of negative numbers)
-  * ℤ and ℚ: complete subtraction
-  * ℕ and ℤ: Euclidean division, GCD, LCM
-  * ℚ: complete division
+  * $\mathbb{N}$: incomplete subtraction (due to lack of negative numbers)
+  * $\mathbb{Z}$ and $\mathbb{Q}$: complete subtraction
+  * $\mathbb{N}$ and $\mathbb{Z}$: Euclidean division, GCD, LCM
+  * $\mathbb{Q}$: complete division
 * **ordering:**
-  * ℕ: `Succ`essor and `predecessor` operators
+  * $\mathbb{N}$: `Succ`essor and `predecessor` operators
   * boolean comparators: `<` `<=` `>` `>=` `==` `/=`
 * **printability:** each number can be printed in brief, like `PeanoN 3`, or as its true underlying form, like `Succ (Succ (Succ Zero))`.
 * **conversion:** type conversions to and from `Integral` types
 
 ## Polynomials.hs
-Provides functionality for a `PolynomType` and a `RationalFunc` type (the latter an alias of `FracType PolynomType`), both instances of a `RealFunction` typeclass. A polynomial of the form *p(x) = a<sub>0</sub> + a<sub>1</sub>x + a<sub>2</sub>x<sup>2</sup> + ... + a<sub>n</sub>x<sup>n</sup>* is stored as a wrapped list of coefficients `[a0, a1, ..., an]`.
-* **arithmetic:** addition, subtraction, multiplication, evaluation of *p(x)*, Euclidean division
+Provides functionality for a `PolynomType` and a `RationalFunc` type (the latter an alias of `FracType PolynomType`), both instances of a `RealFunction` typeclass. A polynomial of the form $p(x) = a_0 + a_1x + a_2x^2 + ... + a_nx^n$ is stored as a wrapped list of coefficients `[a0, a1, ..., an]`.
+* **arithmetic:** addition, subtraction, multiplication, evaluation of $p(x)$, Euclidean division
 * **transformation:** horizontal & vertical shifting/scaling/reflection, determining if a function is even or odd
 * **features:** degree, zeroes (calculated by [Newton's method](https://en.wikipedia.org/wiki/Newton%27s_method))
-* **calculus:** limits (one- and two-sided), differentiation *p(x) → dp/dx*, forward/backward/central difference
-  * for `PolynomType`s: antidifferentiation *p(x) → ∫ p(x) dx*, integration *p(x) → ∫<sub>a</sub><sup>b</sup> p(x) dx*
+* **calculus:** limits (one- and two-sided), differentiation $p(x) \rightarrow dp/dx$, forward/backward/central difference
+  * for `PolynomType`s: antidifferentiation $p(x) \rightarrow \int p(x) dx$, integration $p(x) \rightarrow \int_a^b p(x) dx$
   * for all `RealFunction`s: numerical integration (trapezoid method)
 * **sequences:** provides functions for calculating several different [polynomial sequences](https://en.wikipedia.org/wiki/Polynomial_sequence)
   * Chebyshev, Legendre, Shifted Legendre, Lagurerre, Physicist's Hermite, Probabilist's Hermite, Fibonacci, Lucas, Abel, Falling-Factorial & Rising-Factorial, All-One, Touchard, Bateman
 
 ### to be added
-* **features:** extrema (zeroes of *dp/dx*), turning points (zeroes of *d<sup>2</sup>p/dx<sup>2</sup>*)
+* **features:** extrema (zeroes of $dp/dx$), turning points (zeroes of $d^2x/dx^2$)
 * **sequences:** there are plenty more to be added
 
 ## SetTheory.hs
